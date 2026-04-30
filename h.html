@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html><head><meta charset="UTF-8"></head><body><div id="header"><input type="password" id="pwd"><button id="btn">入力</button></div><div id="body" style="display:none;"><video src="video.mp4" width="640" height="360" type="video/mp4" id="vdo" loop></video>
         <button id="toggleBtn">再生</button>
-</div><script>if(typeof window.eruda !== "null") { eruda.destroy(); delete window.eruda; } const $ = function(q) { return document.querySelector(q); };function hide() { $("#header").style.display="none"; $("#body").style.display="block"; }; $("#btn").onclick = function() { if($("#pwd").value == "ytaka500491") { hide(); localStorage.setItem("v", "1"); } }; if( localStorage.getItem("v") == "1") { hide(); };
+</div><script> const $ = function(q) { return document.querySelector(q); };function hide() { $("#header").style.display="none"; $("#body").style.display="block"; }; $("#btn").onclick = function() { if($("#pwd").value == "ytaka500491") { hide(); localStorage.setItem("v", "1"); } }; if( localStorage.getItem("v") == "1") { hide(); };
 // HTML: <video id="myVideo" src="video.mp4"></video>
 //      <button id="toggleBtn">再生 / 一時停止</button>
 
