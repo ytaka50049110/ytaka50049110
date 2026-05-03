@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>山手線ゲーム</title>
+  <style>
+    body {
+      background: #f5f5f5;
+      font-family: "Yu Gothic", sans-serif;
+      text-align: center;
+    }
+    .container {
+      width: 90%;
+      max-width: 500px;
+      margin: 40px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      background: #4CAF50;
+      color: white;
+    }
+    button:hover {
+      background: #45a049;
+    }
+    .hidden {
+      display: none;
+    }
+    select {
+      width: 80%;
+      padding: 10px;
+      margin: 10px;
+      font-size: 18px;
+    }
+    #message {
+      font-weight: bold;
+      margin: 10px;
+    }
+    #answerList {
+      list-style: none;
+      padding: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎮 山手線ゲーム</h1>
+
+    <div id="gameArea">
+      <h2>テーマ：山手線の駅名</h2>
+      <p>残り時間：<span id="timer">10</span> 秒</p>
+      <p>スコア：<span id="score">0</span></p>
+
+      <select id="answerSelect">
+        <option value="">駅を選択</option>
+      </select>
+      <button id="submitBtn">送信</button>
+
+      <p id="message"></p>
+      <p>これまでの回答：</p>
+      <ul id="answerList"></ul>
+    </div>
+
+    <div id="gameOver" class="hidden">
+      <h2>ゲームオーバー！</h2>
+      <p id="finalScore"></p>
+      <button id="restartBtn">もう一度</button>
+    </div>
+  </div>
+
+  <script>
+    // 山手線の駅一覧
+    const yamanoteStations = [
+      "東京","神田","秋葉原","御徒町","上野","鶯谷","日暮里","西日暮里",
+      "田端","駒込","巣鴨","大塚","池袋","目白","高田馬場","新大久保",
+      "新宿","代々木","原宿","渋谷","恵比寿","目黒","五反田","大崎",
+      "品川","高輪ゲートウェイ","田町","浜松町","新橋","有楽町"
+    ];
+
+    let usedAnswers = [];
+    let score = 0;
+    let timer = 10;
+    let timerInterval;
+
+    const timerDisplay = document.getElementById("timer");
+    const scoreDisplay = document.getElementById("score");
+    const message = document.getElementById("message");
+    const answerList = document.getElementById("answerList");
+    const finalScore = document.getElementById("finalScore");
+    const answerSelect = document.getElementById("answerSelect");
+
+    // select に駅名を追加
+    function setupSelect() {
+      yamanoteStations.forEach(st => {
+        const op = document.createElement("option");
+        op.value = st;
+        op.textContent = st;
+        answerSelect.appendChild(op);
+      });
+    }
+
+    function startTimer() {
+      timer = 10;
+      timerDisplay.textContent = timer;
+
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        timer--;
+        timerDisplay.textContent = timer;
+
+        if (timer <= 0) {
+          gameOver();
+        }
+      }, 1000);
+    }
+
+    function startGame() {
+      usedAnswers = [];
+      score = 0;
+      scoreDisplay.textContent = score;
+      answerList.innerHTML = "";
+      message.textContent = "";
+      answerSelect.value = "";
+      document.getElementById("gameArea").classList.remove("hidden");
+      document.getElementById("gameOver").classList.add("hidden");
+      startTimer();
+    }
+
+    function checkAnswer() {
+      const answer = answerSelect.value;
+
+      if (!answer) return;
+
+      if (usedAnswers.includes(answer)) {
+        message.textContent = "❌ それはもう出てるよ";
+        return;
+      }
+
+      usedAnswers.push(answer);
+      score++;
+      scoreDisplay.textContent = score;
+      message.textContent = "⭕ 正解！";
+
+      const li = document.createElement("li");
+      li.textContent = answer;
+      answerList.appendChild(li);
+
+      answerSelect.value = "";
+      timer = 10;
+    }
+
+    function gameOver() {
+      clearInterval(timerInterval);
+      document.getElementById("gameArea").classList.add("hidden");
+      document.getElementById("gameOver").classList.remove("hidden");
+      finalScore.textContent = `スコア：${score}`;
+    }
+
+    document.getElementById("submitBtn").onclick = checkAnswer;
+    document.getElementById("restartBtn").onclick = startGame;
+
+    window.addEventListener("load", () => {
+      setupSelect();
+      startGame();
+    });
+  </script>
+</body>
+</html>
